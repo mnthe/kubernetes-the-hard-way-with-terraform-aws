@@ -4,7 +4,7 @@
 
 ## Target Audience
 
-1차 목표는 사내 세미나, 그 이후 다듬어서 Public Open 목표
+1차 목표는 사내 세미나, 그 이후 다듬기
 
 ## Cluster Details
 ----
