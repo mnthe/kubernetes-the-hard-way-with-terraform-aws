@@ -22,11 +22,11 @@ Terraform v0.12.13
 2. Linux
 
     ```bash
-    # pip를 통해 설치
+    # pip를 통해 설치합니다.
     pip install awscli
     ```
 
-문서가 오래된 경우 [AWS CLI](https://aws.amazon.com/cli) 페이지를 참고해서 설치해주세요.
+문서가 오래된 경우 [AWS CLI](https://aws.amazon.com/cli) 페이지를 참고해서 설치합니다.
 
 **Verification**
 ```bash
@@ -36,7 +36,7 @@ aws-cli/1.16.111 Python/3.6.0 Windows/10 botocore/1.12.101
 
 ### **3) CFSSL**
 
-cfssl과 cfssljson을 [Release Page](https://github.com/cloudflare/cfssl/releases)에서 다운로드 합니다
+cfssl과 cfssljson을 [Release Page](https://github.com/cloudflare/cfssl/releases)에서 다운로드 합니다.
 
 **Verification**
 ```bash
@@ -51,7 +51,7 @@ Runtime: go1.12.12
 
 ### 4) Install Kubectl
 
-[공식문서](https://kubernetes.io/docs/tasks/tools/install-kubectl/)를 참고하여 kubectl 설치
+[공식문서](https://kubernetes.io/docs/tasks/tools/install-kubectl/)를 참고하여 kubectl 설치합니다.
 
 Verification
 ```bash
