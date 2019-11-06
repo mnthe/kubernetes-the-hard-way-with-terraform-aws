@@ -1,6 +1,10 @@
 # kubernetes-the-hard-way-with-terraform-aws
 
-[kelseyhightower/kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way) 를 AWS 위에 Terraform으로 구축합니다.
+[kelseyhightower/kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way) 를 AWS 위에 Terraform으로 올려봅니다.
+
+## Target Audience
+
+1차 목표는 사내 세미나, 그 이후 다듬어서 Public Open 목표
 
 ## Cluster Details
 ----
@@ -13,4 +17,5 @@
 
 ## Labs
 
-
+* [Prerequisites](docs/00-prerequisites.md)
+* [Provisioning Computing Resources](docs/01-compute-resources.md)
