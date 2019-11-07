@@ -1,4 +1,4 @@
-# kubernetes-the-hard-way-with-terraform-aws
+# Kubernetes the hard way with Terraform on AWS
 
 [kelseyhightower/kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way) 를 AWS 위에 Terraform으로 올려봅니다.
 
@@ -7,7 +7,8 @@
 1차 목표는 사내 세미나, 그 이후 다듬기
 
 ## Cluster Details
-----
+
+---
 
 - [kubernetes](https://github.com/kubernetes/kubernetes) 1.15.3
 - [containerd](https://github.com/containerd/containerd) 1.2.9
@@ -17,5 +18,5 @@
 
 ## Labs
 
-* [Prerequisites](docs/00-prerequisites.md)
-* [Provisioning Computing Resources](docs/01-compute-resources.md)
+- [Prerequisites](docs/00-prerequisites.md)
+- [Provisioning Computing Resources](docs/01-compute-resources.md)
