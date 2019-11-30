@@ -9,8 +9,8 @@ terraform {
 
   # PUBG S3 Terraform Backend
   backend "s3" {
-    bucket = local.backup_bucket
-    key    = "seminar/k8s-the-hard-way/${local.name}"
+    bucket = <BUCKET_NAME> # Variables not allowed in terraform block
+    key    = "seminar/k8s-the-hard-way/<NAME>"
     region = "ap-northeast-2"
   }
 }
