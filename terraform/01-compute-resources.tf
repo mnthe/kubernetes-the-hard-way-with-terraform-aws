@@ -113,7 +113,7 @@ resource "aws_security_group" "external" {
 
 resource "aws_key_pair" "ssh" {
     key_name = "k8s-the-hard-way-${local.name}-ssh-key"
-    public_key = file("./ssh.pem.pub")
+    public_key = file("./ssh/ssh.pem.pub")
 }
 
 data "aws_ami" "ubuntu" {
@@ -196,14 +196,15 @@ output "controller_public_ips" {
     value = aws_instance.controller.*.public_ip
 }
 
-output "worker_public_ips" {
-    value = aws_instance.worker.*.public_ip
-}
-
-output "controller_public_ips" {
-    value = aws_instance.controller.*.public_ip
+output "controller_private_ips" {
+    value = aws_instance.controller.*.private_ip
 }
 
 output "worker_public_ips" {
     value = aws_instance.worker.*.public_ip
 }
+
+output "worker_private_ips" {
+    value = aws_instance.worker.*.private_ip
+}
+
