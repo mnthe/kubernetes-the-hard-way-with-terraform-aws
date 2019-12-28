@@ -254,6 +254,6 @@ resource "aws_lb_listener" "controllers" {
     }
 }
 
-output "controller-loadbalancer-public-ip" {
+output "controller_loadbalancer_public_ip" {
     value = aws_eip.public.public_ip
 }
