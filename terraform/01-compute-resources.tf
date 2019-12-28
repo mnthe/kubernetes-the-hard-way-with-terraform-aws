@@ -37,6 +37,11 @@ resource "aws_route" "public_internet_gateway" {
     gateway_id = aws_internet_gateway.gateway.id
 }
 
+resource "aws_main_route_table_association" "route_table_association" {
+  vpc_id         = aws_vpc.vpc.id
+  route_table_id = aws_route_table.public.id
+}
+
 # 3. Create Security Groups
 resource "aws_security_group" "internal" {
     name = "k8s-the-hard-way-${local.name}-sg-internal"
@@ -104,4 +109,101 @@ resource "aws_security_group" "external" {
     }
 }
 
+# 4. Create Computing Instances // TODO: Autoscaling Group으로 변경
 
+resource "aws_key_pair" "ssh" {
+    key_name = "k8s-the-hard-way-${local.name}-ssh-key"
+    public_key = file("./ssh.pem.pub")
+}
+
+data "aws_ami" "ubuntu" {
+    most_recent = true
+    name_regex  = "^ubuntu/images/hvm-ssd/ubuntu-bionic-18.04.*"
+    owners = ["099720109477"] // Owned by Canonical
+
+    filter {
+        name = "architecture"
+        values = ["x86_64"]
+    }
+
+    filter {
+        name   = "root-device-type"
+        values = ["ebs"]
+    }
+
+    filter {
+        name   = "virtualization-type"
+        values = ["hvm"]
+    }
+}
+
+resource "aws_instance" "controller" {
+    count = 3
+
+    ami = data.aws_ami.ubuntu.id
+    instance_type = "t3.medium"
+
+    subnet_id = aws_subnet.public.id
+    private_ip = "10.240.0.1${count.index}"
+
+    vpc_security_group_ids = [
+        aws_security_group.external.id,
+        aws_security_group.internal.id
+    ]
+
+    key_name = "k8s-the-hard-way-${local.name}-ssh-key"
+
+    root_block_device {
+        volume_type = "gp2"
+        volume_size = 200
+    }
+
+    tags = {
+        "Name" = "k8s-the-hard-way-${local.name}-controller-${count.index}"
+        "Type" = "controller"
+    }
+}
+
+resource "aws_instance" "worker" {
+    count = 3
+
+    ami = data.aws_ami.ubuntu.id
+    instance_type = "t3.large"
+
+    subnet_id = aws_subnet.public.id
+    private_ip = "10.240.0.2${count.index}"
+
+    vpc_security_group_ids = [
+        aws_security_group.external.id,
+        aws_security_group.internal.id
+    ]
+
+    key_name = "k8s-the-hard-way-${local.name}-ssh-key"
+
+    root_block_device {
+        volume_type = "gp2"
+        volume_size = 200
+    }
+
+    tags = {
+        "Name" = "k8s-the-hard-way-${local.name}-worker-${count.index}"
+        "pod-cidr" = "10.200.0.0/24"
+        "Type" = "worker"
+    }
+}
+
+output "controller_public_ips" {
+    value = aws_instance.controller.*.public_ip
+}
+
+output "worker_public_ips" {
+    value = aws_instance.worker.*.public_ip
+}
+
+output "controller_public_ips" {
+    value = aws_instance.controller.*.public_ip
+}
+
+output "worker_public_ips" {
+    value = aws_instance.worker.*.public_ip
+}
