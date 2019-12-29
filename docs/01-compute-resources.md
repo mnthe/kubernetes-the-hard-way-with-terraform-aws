@@ -79,39 +79,6 @@ resource "aws_main_route_table_association" "route_table_association" {
 - 외부: tcp:22, tcp:6443, icmp 허용
 
 ```terraform
-resource "aws_security_group" "internal" {
-    name = "k8s-the-hard-way-${local.name}-sg-internal"
-    vpc_id = aws_vpc.vpc.id
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "tcp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "udp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "icmp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
 resource "aws_security_group" "external" {
     name = "k8s-the-hard-way-${local.name}-sg-external"
     vpc_id = aws_vpc.vpc.id
@@ -144,6 +111,61 @@ resource "aws_security_group" "external" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
+
+resource "aws_security_group" "internal" {
+    name = "k8s-the-hard-way-${local.name}-sg-internal"
+    vpc_id = aws_vpc.vpc.id
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "tcp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "tcp"
+        self = true
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        self = true
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 8
+        protocol = "icmp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 8
+        protocol = "icmp"
+        self = true
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
 ```
 
 ## Computing Resources
@@ -264,7 +286,26 @@ output "worker_private_ips" {
 }
 ```
 
-### 3. Create Loadbalancer for Kubernetes API Server
+### 3. Set Hostmane
+
+Worker 인스턴스와 Controller 인스턴스의 Hostname을 변경합니다.
+
+```bash
+TERRAFORM_OUTPUT=$(terraform output --json)
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname worker-$i
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+done
+
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname controller-$i
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+done
+```
+
+### 4. Create Loadbalancer for Kubernetes API Server
 
 Kubernetes API Server의 고 가용성을 위해 Controller Instance들 앞에 LoadBalancer를 추가합니다.
 

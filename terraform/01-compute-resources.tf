@@ -37,45 +37,18 @@ resource "aws_route" "public_internet_gateway" {
     gateway_id = aws_internet_gateway.gateway.id
 }
 
-resource "aws_main_route_table_association" "route_table_association" {
+resource "aws_route_table_association" "route_table_association" {
+    subnet_id      = aws_subnet.public.id
+    route_table_id = aws_route_table.public.id
+}
+
+resource "aws_main_route_table_association" "main_route_table_association" {
   vpc_id         = aws_vpc.vpc.id
   route_table_id = aws_route_table.public.id
 }
 
+
 # 3. Create Security Groups
-resource "aws_security_group" "internal" {
-    name = "k8s-the-hard-way-${local.name}-sg-internal"
-    vpc_id = aws_vpc.vpc.id
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "tcp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "udp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "icmp"
-        cidr_blocks = ["10.240.0.0/16"]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
 resource "aws_security_group" "external" {
     name = "k8s-the-hard-way-${local.name}-sg-external"
     vpc_id = aws_vpc.vpc.id
@@ -99,6 +72,60 @@ resource "aws_security_group" "external" {
         to_port = 0
         protocol = "icmp"
         cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_security_group" "internal" {
+    name = "k8s-the-hard-way-${local.name}-sg-internal"
+    vpc_id = aws_vpc.vpc.id
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "tcp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "tcp"
+        self = true
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        self = true
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 8
+        protocol = "icmp"
+        cidr_blocks = ["10.240.0.0/16"]
+    }
+
+    ingress {
+        from_port = 0
+        to_port = 8
+        protocol = "icmp"
+        self = true
     }
 
     egress {
