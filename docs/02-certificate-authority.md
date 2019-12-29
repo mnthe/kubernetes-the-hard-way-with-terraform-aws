@@ -365,7 +365,8 @@ service-account.pem
 TERRAFORM_OUTPUT=$(terraform output --json)
 for i in $(seq 0 2); do
     PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
-    scp -o StrictHostKeyChecking=no -i ssh/ssh.pem ca/ca.pem ca/worker-$i-key.pem ca/worker-$i.pem ubuntu@$PUBLIC_IP:~/
+    scp -o StrictHostKeyChecking=no -i ssh/ssh.pem \
+        ca/ca.pem ca/worker-$i-key.pem ca/worker-$i.pem ubuntu@$PUBLIC_IP:~/
 done
 ```
 
@@ -376,8 +377,8 @@ TERRAFORM_OUTPUT=$(terraform output --json)
 for i in $(seq 0 2); do
     PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
     scp -o StrictHostKeyChecking=no -i ssh/ssh.pem \
-    ca/ca.pem ca/ca-key.pem ca/kubernetes-key.pem ca/kubernetes.pem \
-    ca/service-account-key.pem ca/service-account.pem ubuntu@$PUBLIC_IP:~/
+        ca/ca.pem ca/ca-key.pem ca/kubernetes-key.pem ca/kubernetes.pem \
+        ca/service-account-key.pem ca/service-account.pem ubuntu@$PUBLIC_IP:~/
 done
 ```
 
