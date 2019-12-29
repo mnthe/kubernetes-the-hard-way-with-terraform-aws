@@ -1,10 +1,10 @@
-# Provisioning Computing Resource
+# **Provisioning Computing Resource**
 
-## Networking
+## **Networking**
 
 클러스터를 위한 네트워크를 생성합니다. Kubernetes [네트워킹 모델](https://kubernetes.io/docs/concepts/cluster-administration/networking/#kubernetes-model)은 컨테이너와 노드가 서로 통신할 수 있는 플랫 네트워크를 가정합니다.
 
-### **1. Create Virtual Private Cloud(VPC) Network**
+### 1. Create Virtual Private Cloud(VPC) Network
 
 실습을 위한 전용 VPC를 생성합니다.
 
@@ -29,7 +29,7 @@ resource "aws_subnet" "public" {
 }
 ```
 
-### 2. Create Public Subnet
+### **2. Create Public Subnet**
 
 Public IP 자동 설정이 켜진 Subnet 하나와 외부로 연결될 수 있도록 Internet Gateway, Route Table을 생성합니다.
 
@@ -71,7 +71,7 @@ resource "aws_main_route_table_association" "route_table_association" {
 }
 ```
 
-### 3. Create Security Groups
+### **3. Create Security Groups**
 
 내부 / 외부 통신을 위한 Security group을 각각 1개씩 생성합니다
 
@@ -168,9 +168,9 @@ resource "aws_security_group" "internal" {
 
 ```
 
-## Computing Resources
+## **Computing Resources**
 
-### 1. Create ssh key and upload to aws ec2 key pair
+### **1. Create ssh key and upload to aws ec2 key pair**
 
 머신을 위한 ssh키를 생성합니다
 
@@ -188,7 +188,7 @@ resource "aws_key_pair" "ssh" {
 }
 ```
 
-### 2. Create Worker and Controller Instances
+### **2. Create Worker and Controller Instances**
 
 Controller Instance(Master Instance), Worker Instance를 각각 3개씩 생성합니다.
 
@@ -286,7 +286,7 @@ output "worker_private_ips" {
 }
 ```
 
-### 3. Set Hostmane
+### **3. Set Hostmane**
 
 Worker 인스턴스와 Controller 인스턴스의 Hostname을 변경합니다.
 
@@ -305,7 +305,7 @@ for i in $(seq 0 2); do
 done
 ```
 
-### 4. Create Loadbalancer for Kubernetes API Server
+### **4. Create Loadbalancer for Kubernetes API Server**
 
 Kubernetes API Server의 고 가용성을 위해 Controller Instance들 앞에 LoadBalancer를 추가합니다.
 

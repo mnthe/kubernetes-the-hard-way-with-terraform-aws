@@ -1,10 +1,10 @@
-# Generating the Data Encryption Config and Key
+# **Generating the Data Encryption Config and Key**
 
 Kubernetes는 클러스터 상태, 응용 프로그램 구성 및 비밀을 포함한 다양한 데이터를 저장합니다. Kubernetes는 유휴 클러스터 데이터를 암호화 하는 기능을 지원합니다.
 
 이 챕터에서는 Kubernetes Secrets 암호화에 적합한 암호화 키와 암호화 구성 을 생성합니다.
 
-# The Encryption Key
+## **The Encryption Key**
 
 암호화 키를 생성합니다.
 
@@ -12,7 +12,7 @@ Kubernetes는 클러스터 상태, 응용 프로그램 구성 및 비밀을 포�
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 ```
 
-# The Encryption Config File
+## **The Encryption Config File**
 
 Create the encryption-config.yaml encryption config file:
 

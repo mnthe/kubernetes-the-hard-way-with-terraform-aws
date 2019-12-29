@@ -1,8 +1,8 @@
-# Bootstrapping the etcd Cluster
+# **Bootstrapping the etcd Cluster**
 
 Kubernetes는 상태를 etcd에 저장합니다. 이 챕터에서는 3개의 컨트롤러 노드에 etcd 클러스터를 부트스트래핑 합니다.
 
-## Prerequisites
+### **Prerequisites**
 
 이 챕터는 컨트롤러 인스턴스 controller-0, controller-1, controller-2 각각에서 실행해야 합니다.
 
@@ -18,9 +18,9 @@ ssh -i ssh/ssh.pem ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_i
 ssh -i ssh/ssh.pem ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[2]")
 ```
 
-## Bootstrapping an etcd Cluster Member
+## **Bootstrapping an etcd Cluster Member**
 
-### etcd binary 다운로드 및 설치
+### **etcd binary 다운로드 및 설치**
 
 etcd GitHub 프로젝트 에서 공식 etcd 릴리스 바이너리를 다운로드합니다.
 
@@ -36,7 +36,7 @@ tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
 sudo mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 ```
 
-### etcd 서버 구성
+### **etcd 서버 구성**
 
 ```bash
 sudo mkdir -p /etc/etcd /var/lib/etcd
@@ -91,7 +91,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-### etcd 서비스 실행
+### **etcd 서비스 실행**
 
 ```
 sudo systemctl daemon-reload
@@ -99,7 +99,7 @@ sudo systemctl enable etcd
 sudo systemctl start etcd
 ```
 
-## Verification
+## **Verification**
 
 etcd cluster member를 나열해봅니다.
 

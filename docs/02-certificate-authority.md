@@ -1,8 +1,8 @@
-# Provisioning a CA and Generating TLS Certificates
+# **Provisioning a CA and Generating TLS Certificates**
 
 cfssl을 사용하여 PKI 인프라를 프로비저닝하고, `etcd`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, `kubelet`, `kube-proxy`에 대한 TLS 인증서를 생성합니다.
 
-## Certificate Authority
+## **Certificate Authority**
 
 CA 구성파일을 저장하고, 인증서 및 Private Key를 생성합니다.
 
@@ -53,11 +53,11 @@ ca-key.pem
 ca.pem
 ```
 
-## Client and Server Certificates
+## **Client and Server Certificates**
 
 이 섹션에서는 각 Kubernetes 구성 요소에 대한 클라이언트 및 서버 인증서와 Kubernetes `admin` 사용자에 대한 클라이언트 인증서를 생성합니다.
 
-### The Admin Client Certificate
+### **The Admin Client Certificate**
 
 `admin` 클라이언트 인증서와 private key를 생성합니다.
 
@@ -96,7 +96,7 @@ admin-key.pem
 admin.pem
 ```
 
-### The Kubelet Client Certificates
+### **The Kubelet Client Certificates**
 
 Kubernetes는 Node Authorizer라는 특수 목적의 권한 부여 모드를 사용합니다. 이 모드 는 Kubelets의 API 요청을 구체적으로 승인합니다. 노드 인증 자에 의해 권한을 부여 받기 위해 Kubelets는 `system:node:<nodeName>` 사용자 이름이 `system:nodes` 그룹 에있는 것으로 식별하는 자격 증명을 사용해야합니다.
 
@@ -149,7 +149,7 @@ worker-2-key.pem
 worker-2.pem
 ```
 
-### The Controller Manager Client Certificate
+### **The Controller Manager Client Certificate**
 
 `kube-controller-manager` 클라이언트 인증서 및 Private Key를 생성합니다.
 
@@ -188,7 +188,7 @@ kube-controller-manager-key.pem
 kube-controller-manager.pem
 ```
 
-### The Kube Proxy Client Certificate
+### **The Kube Proxy Client Certificate**
 
 `kube-proxy`의 클라이언트 인증서 및 Private Key를 생성합니다.
 
@@ -227,7 +227,7 @@ kube-proxy-key.pem
 kube-proxy.pem
 ```
 
-### The Scheduler Client Certificate
+### **The Scheduler Client Certificate**
 
 `kube-scheduler`의 클라이언트 인증서 및 Private Key를 생성합니다.
 
@@ -266,7 +266,7 @@ kube-scheduler-key.pem
 kube-scheduler.pem
 ```
 
-### The Kubernetes API Server Certificate
+### **The Kubernetes API Server Certificate**
 
 `kubernetes-api-server`의 클라이언트 인증서 및 Private Key를 생성합니다.
 
@@ -276,8 +276,7 @@ kube-scheduler.pem
 
 TERRAFORM_OUTPUT=$(terraform output --json)
 
-KUBERNETES_PUBLIC_IPS=$(echo $TERRAFORM_OUTPUT | jq -r '.worker_public_ips.value | join(",")')
-KUBERNETES_PRIVATE_IPS=$(echo $TERRAFORM_OUTPUT | jq -r '.worker_private_ips.value | join(",")')
+KUBERNETES_PUBLIC_ADDRESS=$(echo $TERRAFORM_OUTPUT | jq -r '.controller_loadbalancer_public_ip.value')
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 
 cat > ca/kubernetes-csr.json <<EOF
@@ -299,7 +298,7 @@ cat > ca/kubernetes-csr.json <<EOF
 }
 EOF
 
-HOSTNAME=10.32.0.1,$KUBERNETES_PRIVATE_IPS,$KUBERNETES_PUBLIC_IPS,127.0.0.1,$KUBERNETES_HOSTNAMES
+HOSTNAME=10.32.0.1,10.240.0.10,10.240.0.11,10.240.0.12,$KUBERNETES_PUBLIC_ADDRESS,127.0.0.1,$KUBERNETES_HOSTNAMES
 cfssl gencert \
   -ca=ca/ca.pem \
   -ca-key=ca/ca-key.pem \
@@ -316,7 +315,7 @@ kubernetes-key.pem
 kubernetes.pem
 ```
 
-## The Service Account Key Pair
+## **The Service Account Key Pair**
 
 Kubernetes Controller Manager는 서비스 계정 관리 문서에 설명 된대로 키 쌍을 사용하여 서비스 계정 토큰을 생성하고 서명합니다 .
 
@@ -357,7 +356,7 @@ service-account-key.pem
 service-account.pem
 ```
 
-## Distribute the Client and Server Certificates
+## **Distribute the Client and Server Certificates**
 
 적절한 인증서와 개인 키를 각 Worker 인스턴스에 복사합니다.
 

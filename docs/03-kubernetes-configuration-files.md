@@ -1,10 +1,10 @@
-# Generating Kubernetes Configuration Files for Authentication
+# **Generating Kubernetes Configuration Files for Authentication**
 
-## Client Authentication Configs
+## **Client Authentication Configs**
 
 이 섹션에서는 `controller manager`, `kubelet`, `kube-proxy`, 및 `scheduler`클라이언트와 `admin` 사용자에 대한 kubeconfig 파일을 생성합니다.
 
-### The kubelet Kubernetes Configuration File
+### **The kubelet Kubernetes Configuration File**
 
 Kubelets에 대한 kubeconfig 파일을 생성 할 때 Kubelet의 노드 이름과 일치하는 클라이언트 인증서를 사용해야합니다. 이를 통해 Kubelet이 Kubernetes Node Authorizer에 의해 올바르게 승인됩니다.
 
@@ -43,7 +43,7 @@ kubernetes-key.pem
 kubernetes.pem
 ```
 
-### The kube-proxy Kubernetes Configuration File
+### **The kube-proxy Kubernetes Configuration File**
 
 `kube-proxy` 서비스에 대한 kubeconfig 파일을 생성합니다.
 
@@ -77,7 +77,7 @@ kube-proxy.kubeconfig
 
 ```
 
-### The kube-controller-manager Kubernetes Configuration File
+### **The kube-controller-manager Kubernetes Configuration File**
 
 `kube-controller-manager` 서비스에 대한 kubeconfig 파일을 생성합니다.
 
@@ -108,7 +108,7 @@ kubectl config use-context default --kubeconfig=config/kube-controller-manager.k
 kube-controller-manager.kubeconfig
 ```
 
-### The kube-scheduler Kubernetes Configuration File
+### **The kube-scheduler Kubernetes Configuration File**
 
 kube-scheduler서비스에 대한 kubeconfig 파일을 생성합니다.
 
@@ -139,7 +139,7 @@ kubectl config use-context default --kubeconfig=config/kube-scheduler.kubeconfig
 kube-scheduler.kubeconfig
 ```
 
-### The admin Kubernetes Configuration File
+### **The admin Kubernetes Configuration File**
 
 admin사용자에 대한 kubeconfig 파일을 생성합니다.
 
@@ -170,7 +170,7 @@ kubectl config use-context default --kubeconfig=config/admin.kubeconfig
 admin.kubeconfig
 ```
 
-## Kubernets Config 파일 배포
+## **Kubernets Config 파일 배포**
 
 `kubelet` 및 `kube-proxy` kubeconfig 파일을 각 워커노드에 복사합니다.
 
