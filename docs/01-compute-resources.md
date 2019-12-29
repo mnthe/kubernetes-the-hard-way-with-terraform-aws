@@ -264,7 +264,7 @@ resource "aws_instance" "worker" {
 
     tags = {
         "Name" = "k8s-the-hard-way-${local.name}-worker-${count.index}"
-        "pod-cidr" = "10.200.0.0/24"
+        "pod-cidr" = "10.200.${count.index}.0/24"
         "Type" = "worker"
     }
 }
