@@ -115,15 +115,15 @@ resource "aws_security_group" "internal" {
     }
 
     ingress {
-        from_port = 0
-        to_port = 8
+        from_port = -1
+        to_port = -1
         protocol = "icmp"
         cidr_blocks = ["10.240.0.0/16"]
     }
 
     ingress {
-        from_port = 0
-        to_port = 8
+        from_port = -1
+        to_port = -1
         protocol = "icmp"
         self = true
     }
