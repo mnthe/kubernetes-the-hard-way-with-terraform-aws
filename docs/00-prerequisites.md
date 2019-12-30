@@ -78,7 +78,12 @@ Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCom
 
 ## **3. Setup Terraform AWS provider & Terraform backend**
 
----
+실습에서 사용할 폴더를 하나 생성합니다. 앞으로의 실습은 해당 폴더에서 진행됩니다.
+
+```bash
+mkdir kubernetes-the-hard-way
+cd kubernetes-the-hard-way
+```
 
 ### **1) Setup terraform local variables**
 
