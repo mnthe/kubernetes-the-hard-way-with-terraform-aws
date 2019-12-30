@@ -2,8 +2,6 @@
 
 ## **1. Install Cli Tools**
 
----
-
 ### **1) Terraform**
 
 [다운로드 페이지](https://www.terraform.io/downloads.html)에서 Terraform을 다운로드 받습니다.
@@ -69,8 +67,6 @@ Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCom
 기본으로 깔려있어야 함...
 
 ## **2. Confituration**
-
----
 
 ### **AWS Credentials**
 

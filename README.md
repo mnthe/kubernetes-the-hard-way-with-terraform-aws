@@ -8,8 +8,6 @@
 
 ## Cluster Details
 
----
-
 - [kubernetes](https://github.com/kubernetes/kubernetes) 1.15.3
 - [containerd](https://github.com/containerd/containerd) 1.2.9
 - [coredns](https://github.com/coredns/coredns) v1.6.3
