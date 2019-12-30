@@ -387,7 +387,7 @@ output "worker_private_ips" {
 
 Worker 인스턴스와 Controller 인스턴스의 Hostname을 변경합니다.
 
-추가로 각 인스턴스의 Host에 worker 인스턴스의 호스트 이름을 등록합니다.
+추가로 각 인스턴스에 서로의 주소를 /etc/host에 등록하여 hostname으로 서로를 찾을 수 있도록 설정합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -417,6 +417,8 @@ done
 ```
 
 ### **4. Disable source-dest-check**
+
+AWS ENI의 source-dest-check 기능을 꺼 POD_CIDR 주소, Kubernetes DNS 주소등과 같이 aws에서 할당된 주소가 아닌곳에 요청을 정상적으로 보낼 수 있도록 합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
