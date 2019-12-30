@@ -9,7 +9,7 @@
 **Verification**
 
 ```bash
-$ terraform version
+terraform version
 Terraform v0.12.13
 ```
 
@@ -31,7 +31,7 @@ Terraform v0.12.13
 **Verification**
 
 ```bash
-$ aws --version
+aws --version
 aws-cli/1.16.111 Python/3.6.0 Windows/10 botocore/1.12.101
 ```
 
@@ -42,11 +42,11 @@ cfssl과 cfssljson을 [Release Page](https://github.com/cloudflare/cfssl/release
 **Verification**
 
 ```bash
-$ cfssl version
+cfssl version
 Version: 1.4.0
 Runtime: go1.12.12
 
-$ cfssljson --version
+cfssljson --version
 Version: 1.4.0
 Runtime: go1.12.12
 ```
@@ -58,7 +58,7 @@ Runtime: go1.12.12
 **Verification**
 
 ```bash
-$ kubectl version
+kubectl version
 Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCommit:"2bd9643cee5b3b3a5ecbd3af49d09018f0773c77", GitTreeState:"clean", BuildDate:"2019-09-18T14:36:53Z", GoVersion:"go1.12.9", Compiler:"gc", Platform:"windows/amd64"}
 ```
 

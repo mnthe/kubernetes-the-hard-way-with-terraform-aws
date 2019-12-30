@@ -175,8 +175,8 @@ resource "aws_security_group" "internal" {
 머신을 위한 ssh키를 생성합니다
 
 ```bash
-$ mkdir ./ssh
-$ ssh-keygen -t rsa -f ./ssh/ssh.pem
+mkdir ./ssh
+ssh-keygen -t rsa -f ./ssh/ssh.pem
 ```
 
 만들어진 ssh키를 aws에 등록합니다.
