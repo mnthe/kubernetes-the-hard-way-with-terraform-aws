@@ -36,7 +36,7 @@ tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
 sudo mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 ```
 
-### **etcd 서버 구성**
+### **etcd 서버 설정**
 
 ```bash
 sudo mkdir -p /etc/etcd /var/lib/etcd

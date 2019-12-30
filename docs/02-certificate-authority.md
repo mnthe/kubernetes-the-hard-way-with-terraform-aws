@@ -4,7 +4,7 @@ cfssl을 사용하여 PKI 인프라를 프로비저닝하고, `etcd`, `kube-apis
 
 ## **Certificate Authority**
 
-CA 구성파일을 저장하고, 인증서 및 Private Key를 생성합니다.
+CA 설정파일을 저장하고, 인증서 및 Private Key를 생성합니다.
 
 ```bash
 mkdir ca
@@ -381,4 +381,4 @@ for i in $(seq 0 2); do
 done
 ```
 
-> `kube-proxy`, `kube-controller-manager`, `kube-scheduler`, `kubelet` 클라이언트 인증서는 다음 챕터에서 클라이언트 인증 구성 파일을 생성하는데 사용됨
+> `kube-proxy`, `kube-controller-manager`, `kube-scheduler`, `kubelet` 클라이언트 인증서는 다음 챕터에서 클라이언트 인증 설정 파일을 생성하는데 사용됨

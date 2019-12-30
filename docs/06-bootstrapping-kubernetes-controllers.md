@@ -2,7 +2,7 @@
 
 이 챕터에서는 Kubernetes 컨트롤 플레인을 부트 스트랩합니다. 고 가용성을 위해 3개의 컨트롤러 인스턴스에 세팅을 하며, Kubernetes API 서버를 원격 클라이언트에 노출시키는 외부로드 밸런서를 생성합니다.
 
-Kubernetes API 서버, 스케줄러 및 컨트롤러 관리자와 같은 구성 요소가 각 노드에 설치됩니다.
+Kubernetes API 서버, 스케줄러 및 컨트롤러 관리자와 같은 설정 요소가 각 노드에 설치됩니다.
 
 ### **Prerequisites**
 
@@ -264,7 +264,7 @@ X-Content-Type-Options: nosniff
 
 ## **RBAC for Kubelet Authorization**
 
-이 섹션에서는 Kubernetes API 서버가 각 작업자 노드의 Kubelet API에 액세스 할 수 있도록 RBAC 권한을 구성합니다. 포드에서 메트릭, 로그 및 명령을 검색하려면 Kubelet API에 액세스해야합니다.
+이 섹션에서는 Kubernetes API 서버가 각 작업자 노드의 Kubelet API에 액세스 할 수 있도록 RBAC 권한을 설정합니다. 포드에서 메트릭, 로그 및 명령을 검색하려면 Kubelet API에 액세스해야합니다.
 
 > 이 튜토리얼은 Kubelet의 `--authorization-mode` 플래그를 `Webhook`으로 설정합니다. 웹훅 모드는 [SubjectAccessReview API](https://kubernetes.io/docs/admin/authorization/#checking-api-access)를 사용하여 권한을 결정합니다.
 
