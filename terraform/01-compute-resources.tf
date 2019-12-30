@@ -186,7 +186,7 @@ EOF
 
 resource "aws_iam_role_policy" "controller_policy" {
     name = "k8s-the-hard-way-${local.name}-controller-policy"
-    role = "${aws_iam_role.controller_role.id}"
+    role = aws_iam_role.controller_role.id
 
     policy = <<EOF
 {
@@ -206,7 +206,7 @@ EOF
 
 resource "aws_iam_instance_profile" "controller_profile" {
   name = "k8s-the-hard-way-${local.name}-controller-profile"
-  role = "${aws_iam_role.controller_role.name}"
+  role = aws_iam_role.controller_role.name
 }
 
 resource "aws_iam_role" "worker_role" {
@@ -231,7 +231,7 @@ EOF
 
 resource "aws_iam_role_policy" "worker_policy" {
     name = "k8s-the-hard-way-${local.name}-worker-policy"
-    role = "${aws_iam_role.worker_role.id}"
+    role = aws_iam_role.worker_role.id
 
     policy = <<EOF
 {
@@ -251,7 +251,7 @@ EOF
 
 resource "aws_iam_instance_profile" "worker_profile" {
   name = "k8s-the-hard-way-${local.name}-worker-profile"
-  role = "${aws_iam_role.worker_role.name}"
+  role = aws_iam_role.worker_role.name
 }
 
 resource "aws_instance" "controller" {
@@ -262,6 +262,7 @@ resource "aws_instance" "controller" {
 
     subnet_id = aws_subnet.public.id
     private_ip = "10.240.0.1${count.index}"
+    source_dest_check = false
 
     vpc_security_group_ids = [
         aws_security_group.external.id,
@@ -290,6 +291,7 @@ resource "aws_instance" "worker" {
 
     subnet_id = aws_subnet.public.id
     private_ip = "10.240.0.2${count.index}"
+    source_dest_check = false
 
     vpc_security_group_ids = [
         aws_security_group.external.id,

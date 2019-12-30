@@ -241,7 +241,7 @@ EOF
 
 resource "aws_iam_role_policy" "controller_policy" {
     name = "k8s-the-hard-way-${local.name}-controller-policy"
-    role = "${aws_iam_role.controller_role.id}"
+    role = aws_iam_role.controller_role.id
 
     policy = <<EOF
 {
@@ -261,7 +261,7 @@ EOF
 
 resource "aws_iam_instance_profile" "controller_profile" {
   name = "k8s-the-hard-way-${local.name}-controller-profile"
-  role = "${aws_iam_role.controller_role.name}"
+  role = aws_iam_role.controller_role.name
 }
 
 resource "aws_iam_role" "worker_role" {
@@ -286,7 +286,7 @@ EOF
 
 resource "aws_iam_role_policy" "worker_policy" {
     name = "k8s-the-hard-way-${local.name}-worker-policy"
-    role = "${aws_iam_role.worker_role.id}"
+    role = aws_iam_role.worker_role.id
 
     policy = <<EOF
 {
@@ -306,7 +306,7 @@ EOF
 
 resource "aws_iam_instance_profile" "worker_profile" {
   name = "k8s-the-hard-way-${local.name}-worker-profile"
-  role = "${aws_iam_role.worker_role.name}"
+  role = aws_iam_role.worker_role.name
 }
 
 resource "aws_instance" "controller" {
@@ -317,6 +317,7 @@ resource "aws_instance" "controller" {
 
     subnet_id = aws_subnet.public.id
     private_ip = "10.240.0.1${count.index}"
+    source_dest_check = false
 
     vpc_security_group_ids = [
         aws_security_group.external.id,
@@ -345,6 +346,7 @@ resource "aws_instance" "worker" {
 
     subnet_id = aws_subnet.public.id
     private_ip = "10.240.0.2${count.index}"
+    source_dest_check = false
 
     vpc_security_group_ids = [
         aws_security_group.external.id,
@@ -416,50 +418,7 @@ for i in $(seq 0 2); do
 done
 ```
 
-### **4. Disable source-dest-check**
-
-AWS ENI의 source-dest-check 기능을 꺼 POD_CIDR 주소, Kubernetes DNS 주소등과 같이 aws에서 할당된 주소가 아닌곳에 요청을 정상적으로 보낼 수 있도록 합니다.
-
-```bash
-TERRAFORM_OUTPUT=$(terraform output --json)
-REGION=$(echo $TERRAFORM_OUTPUT | jq -r ".region.value")
-for i in $(seq 0 2); do
-    WORKER_ID=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_instance_ids.value[$i]")
-    aws ec2 modify-instance-attribute --no-source-dest-check --instance-id $WORKER_ID --region $REGION
-
-    CONTROLLER_ID=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_instance_ids.value[$i]")
-    aws ec2 modify-instance-attribute --no-source-dest-check --instance-id $CONTROLLER_ID --region $REGION
-done
-```
-
-### **5. Create Loadbalancer for Kubernetes API Server**
-
-```bash
-TERRAFORM_OUTPUT=$(terraform output --json)
-for i in $(seq 0 2); do
-    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
-    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname worker-$i
-    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
-    for j in $(seq 0 2); do
-        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
-        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
-        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
-        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
-    done
-done
-
-for i in $(seq 0 2); do
-    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
-    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname controller-$i
-    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
-    for j in $(seq 0 2); do
-        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
-        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
-        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
-        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
-    done
-done
-```
+### **4. Create Loadbalancer for Kubernetes API Server**
 
 이후 챕터에서 Kubernetes API Server의 고 가용성을 위해 Load Balancer를 사용하게 됩니다.
 
