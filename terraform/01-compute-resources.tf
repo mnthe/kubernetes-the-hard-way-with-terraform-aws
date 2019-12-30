@@ -29,6 +29,7 @@ resource "aws_internet_gateway" "gateway" {
 
 resource "aws_route_table" "public" {
     vpc_id = aws_vpc.vpc.id
+
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -46,7 +47,6 @@ resource "aws_main_route_table_association" "main_route_table_association" {
   vpc_id         = aws_vpc.vpc.id
   route_table_id = aws_route_table.public.id
 }
-
 
 # 3. Create Security Groups
 resource "aws_security_group" "external" {
@@ -311,12 +311,24 @@ resource "aws_instance" "worker" {
     }
 }
 
+output "controller_instance_ids" {
+    value = aws_instance.controller.*.id
+}
+
 output "controller_public_ips" {
     value = aws_instance.controller.*.public_ip
 }
 
 output "controller_private_ips" {
     value = aws_instance.controller.*.private_ip
+}
+
+output "controller_eni_ids" {
+    value = aws_instance.controller.*.primary_network_interface_id
+}
+
+output "worker_instance_ids" {
+    value = aws_instance.worker.*.id
 }
 
 output "worker_public_ips" {
@@ -327,6 +339,9 @@ output "worker_private_ips" {
     value = aws_instance.worker.*.private_ip
 }
 
+output "worker_eni_ids" {
+    value = aws_instance.worker.*.primary_network_interface_id
+}
 
 # 5. Create Loadbalancer for Controller (Kubernetes API Server)
 
@@ -335,41 +350,6 @@ resource "aws_eip" "public" {
 
     tags = {
         Name = "k8s-the-hard-way-${local.name}-lb-eip"
-    }
-}
-
-resource "aws_lb" "public" {
-    name = "k8s-the-hard-way-${local.name}-lb"
-    load_balancer_type = "network"
-
-    subnet_mapping {
-        subnet_id = aws_subnet.public.id
-        allocation_id = aws_eip.public.id
-    }
-}
-
-resource "aws_lb_target_group" "controllers" {
-    name     = "k8s-the-hard-way-${local.name}-tg"
-    port     = 6443
-    protocol = "TCP"
-    vpc_id   = aws_vpc.vpc.id
-}
-
-resource "aws_lb_target_group_attachment" "controller_attachment" {
-    count            = 3
-    target_group_arn = aws_lb_target_group.controllers.arn
-    target_id        = aws_instance.controller[count.index].id
-    port             = 6443
-}
-
-resource "aws_lb_listener" "controllers" {
-    load_balancer_arn = aws_lb.public.arn
-    port              = "6443"
-    protocol          = "TCP"
-
-    default_action {
-        type             = "forward"
-        target_group_arn = aws_lb_target_group.controllers.arn
     }
 }
 

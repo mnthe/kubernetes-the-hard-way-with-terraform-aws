@@ -64,6 +64,10 @@ $ kubectl version
 Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCommit:"2bd9643cee5b3b3a5ecbd3af49d09018f0773c77", GitTreeState:"clean", BuildDate:"2019-09-18T14:36:53Z", GoVersion:"go1.12.9", Compiler:"gc", Platform:"windows/amd64"}
 ```
 
+### **5) ssh, scp**
+
+기본으로 깔려있어야 함...
+
 ## **2. Confituration**
 
 ---
@@ -83,6 +87,10 @@ locals {
     region = <REGION>
     name   = <NAME>
     backup_bucket = <BUCKET_NAME>
+}
+
+output "region" {
+    value = local.region
 }
 ```
 

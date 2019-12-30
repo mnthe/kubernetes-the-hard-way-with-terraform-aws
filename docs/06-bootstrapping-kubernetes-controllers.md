@@ -330,17 +330,9 @@ EOF
 
 이 섹션에서는 Kubernetes API 서버를 위해 외부로드 밸런서를 프로비저닝합니다.
 
-챕터 1에서 컴퓨팅 인스턴스와 함께 프로비저닝 된 로드밸런서를 사용합니다.
+Network Load Balancer를 생성한 뒤 챕터 1에서 미리 발급받은 eip를 할당합니다.
 
 ```terraform
-resource "aws_eip" "public" {
-    vpc = true
-
-    tags = {
-        Name = "k8s-the-hard-way-${local.name}-lb-eip"
-    }
-}
-
 resource "aws_lb" "public" {
     name = "k8s-the-hard-way-${local.name}-lb"
     load_balancer_type = "network"

@@ -19,3 +19,6 @@ provider "aws" {
   region = local.region
 }
 
+output "region" {
+    value = local.region
+}

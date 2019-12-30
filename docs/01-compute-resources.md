@@ -383,9 +383,11 @@ output "worker_private_ips" {
 }
 ```
 
-### **3. Set Hostmane**
+### **3. Set Hostmane & Add to /etc/host**
 
 Worker 인스턴스와 Controller 인스턴스의 Hostname을 변경합니다.
+
+추가로 각 인스턴스의 Host에 worker 인스턴스의 호스트 이름을 등록합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -393,18 +395,73 @@ for i in $(seq 0 2); do
     PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
     ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname worker-$i
     ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+    for j in $(seq 0 2); do
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
+    done
 done
 
 for i in $(seq 0 2); do
     PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
     ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname controller-$i
     ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+    for j in $(seq 0 2); do
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
+    done
 done
 ```
 
-### **4. Create Loadbalancer for Kubernetes API Server**
+### **4. Disable source-dest-check**
 
-Kubernetes API Server의 고 가용성을 위해 Controller Instance들 앞에 LoadBalancer를 추가합니다.
+```bash
+TERRAFORM_OUTPUT=$(terraform output --json)
+REGION=$(echo $TERRAFORM_OUTPUT | jq -r ".region.value")
+for i in $(seq 0 2); do
+    WORKER_ID=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_instance_ids.value[$i]")
+    aws ec2 modify-instance-attribute --no-source-dest-check --instance-id $WORKER_ID --region $REGION
+
+    CONTROLLER_ID=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_instance_ids.value[$i]")
+    aws ec2 modify-instance-attribute --no-source-dest-check --instance-id $CONTROLLER_ID --region $REGION
+done
+```
+
+### **5. Create Loadbalancer for Kubernetes API Server**
+
+```bash
+TERRAFORM_OUTPUT=$(terraform output --json)
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname worker-$i
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+    for j in $(seq 0 2); do
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
+    done
+done
+
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP sudo hostnamectl set-hostname controller-$i
+    ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP 'echo "preserve_hostname: true" | sudo tee --append /etc/cloud/cloud.cfg'
+    for j in $(seq 0 2); do
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP worker-$j worker-$j.cluster.local\" | sudo tee --append /etc/hosts"
+        PRIVATE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_private_ips.value[$j]")
+        ssh -i ssh/ssh.pem ubuntu@$PUBLIC_IP "echo \"$PRIVATE_IP controller-$j controller-$j.cluster.local\" | sudo tee --append /etc/hosts"
+    done
+done
+```
+
+이후 챕터에서 Kubernetes API Server의 고 가용성을 위해 Load Balancer를 사용하게 됩니다.
+
+해당 Load Balancer에서 사용할 EIP를 미리 발급받습니다.
 
 ```terraform
 resource "aws_eip" "public" {
@@ -412,41 +469,6 @@ resource "aws_eip" "public" {
 
     tags = {
         Name = "k8s-the-hard-way-${local.name}-lb-eip"
-    }
-}
-
-resource "aws_lb" "public" {
-    name = "k8s-the-hard-way-${local.name}-lb"
-    load_balancer_type = "network"
-
-    subnet_mapping {
-        subnet_id = aws_subnet.public.id
-        allocation_id = aws_eip.public.id
-    }
-}
-
-resource "aws_lb_target_group" "controllers" {
-    name     = "k8s-the-hard-way-${local.name}-tg"
-    port     = 6443
-    protocol = "TCP"
-    vpc_id   = aws_vpc.vpc.id
-}
-
-resource "aws_lb_target_group_attachment" "controller_attachment" {
-    count            = 3
-    target_group_arn = aws_lb_target_group.controllers.arn
-    target_id        = aws_instance.controller[count.index].id
-    port             = 6443
-}
-
-resource "aws_lb_listener" "controllers" {
-    load_balancer_arn = aws_lb.public.arn
-    port              = "6443"
-    protocol          = "TCP"
-
-    default_action {
-        type             = "forward"
-        target_group_arn = aws_lb_target_group.controllers.arn
     }
 }
 
