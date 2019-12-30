@@ -19,3 +19,17 @@ terraform destroy
 ```
 rm -rf ./*
 ```
+
+## Remove Kubeconfig
+
+로컬 kubeconfig에 등록된 kubeconfig를 삭제합니다.
+
+```
+kubectl config unset current-context
+
+kubectl config delete-context kubernetes-the-hard-way
+kubectl config delete-cluster kubernetes-the-hard-way
+kubectl config unset users.admin
+
+kubectl config use-context $(kubectl config get-contexts -o name | head -n 1)
+```
