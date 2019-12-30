@@ -184,7 +184,7 @@ resource "aws_security_group_rule" "nginx" {
 }
 ```
 
-Worker의 External IP 주소와 nginx노드 포트를 사용하여 HTTP 요청을 보냅니다.
+작업자 노드의 External IP 주소와 nginx노드 포트를 사용하여 HTTP 요청을 보냅니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform12 output --json)

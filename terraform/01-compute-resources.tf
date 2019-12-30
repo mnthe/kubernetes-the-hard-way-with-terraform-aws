@@ -136,7 +136,7 @@ resource "aws_security_group" "internal" {
     }
 }
 
-# 4. Create Computing Instances // TODO: Autoscaling Group으로 변경
+# 4. Create AWS Instances // TODO: Autoscaling Group으로 변경
 
 resource "aws_key_pair" "ssh" {
     key_name = "k8s-the-hard-way-${local.name}-ssh-key"

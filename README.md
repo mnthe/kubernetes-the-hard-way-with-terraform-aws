@@ -22,5 +22,5 @@
 ## TODOs
 
 1. POD_CIDR를 가져오는 부분을 user-data로 변경
-2. worker-0, worker-1, worker-2를 인스턴스 아이디를 그대로 사용하도록 변경 또는 커스텀 VPC DNS를 사용하도록 변경
-3. Computing Instance를 Autoscaling Group으로 변경
+2. worker-0, worker-1, worker-2를 노드 아이디를 그대로 사용하도록 변경 또는 커스텀 VPC DNS를 사용하도록 변경
+3. Computing 노드를 Autoscaling Group으로 변경

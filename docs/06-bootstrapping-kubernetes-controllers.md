@@ -1,14 +1,14 @@
 # **Bootstrapping the Kubernetes Control Plane**
 
-이 챕터에서는 Kubernetes 컨트롤 플레인을 부트 스트랩합니다. 고 가용성을 위해 3개의 컨트롤러 인스턴스에 세팅을 하며, Kubernetes API 서버를 원격 클라이언트에 노출시키는 외부로드 밸런서를 생성합니다.
+이 챕터에서는 Kubernetes 컨트롤 플레인을 부트 스트랩합니다. 고 가용성을 위해 3개의 컨트롤러 노드에 세팅을 하며, Kubernetes API 서버를 원격 클라이언트에 노출시키는 외부로드 밸런서를 생성합니다.
 
 Kubernetes API 서버, 스케줄러 및 컨트롤러 관리자와 같은 설정 요소가 각 노드에 설치됩니다.
 
 ### **Prerequisites**
 
-이 챕터는 컨트롤러 인스턴스 controller-0, controller-1, controller-2 각각에서 실행해야 합니다.
+이 챕터는 컨트롤러 노드 controller-0, controller-1, controller-2 각각에서 실행해야 합니다.
 
-ssh를 통해 컨트롤러 인스턴스에 로그인 합니다.
+ssh를 통해 컨트롤러 노드에 로그인 합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -56,7 +56,7 @@ sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     encryption-config.yaml /var/lib/kubernetes/
 ```
 
-인스턴스 내부 IP 주소는 클라이언트 요청을 처리하고 etcd 클러스터 피어와 통신하는 데 사용됩니다. 현재 인스턴스의 Private IP 주소를 검색합니다.
+노드 내부 IP 주소는 클라이언트 요청을 처리하고 etcd 클러스터 피어와 통신하는 데 사용됩니다. 현재 노드의 Private IP 주소를 검색합니다.
 
 ```bash
 INTERNAL_IP=$(curl -s http://169.254.169.254/1.0/meta-data/local-ipv4)
@@ -201,7 +201,7 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 HTTP Status Check를 위해 기본 웹 서버를 설치합니다.
 
-> 각 컨트롤러 인스턴스의 로컬에 nginx를 설치하고 /healthz 엔드포인트를 프록시하여 상태를 체크합니다.
+> 각 컨트롤러 노드의 로컬에 nginx를 설치하고 /healthz 엔드포인트를 프록시하여 상태를 체크합니다.
 
 ```bash
 sudo apt-get update

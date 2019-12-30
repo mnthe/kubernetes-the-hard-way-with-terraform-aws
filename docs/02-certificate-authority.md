@@ -358,7 +358,7 @@ service-account.pem
 
 ## **Distribute the Client and Server Certificates**
 
-적절한 인증서와 개인 키를 각 Worker 인스턴스에 복사합니다.
+적절한 인증서와 개인 키를 각 작업자 노드에 복사합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -369,7 +369,7 @@ for i in $(seq 0 2); do
 done
 ```
 
-적절한 인증서 및 개인 키를 각 Controller 인스턴스에 복사하십시오.
+적절한 인증서 및 개인 키를 각 컨트롤러 노드에 복사하십시오.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)

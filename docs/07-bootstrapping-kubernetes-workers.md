@@ -1,12 +1,12 @@
 # Bootstrapping the Kubernetes Worker Nodes
 
-이 챕터에서는 3개의 Kubernetes 워커 인스턴스를 부트스트래핑 합니다. 각 워커 인스턴스에 `runc`, `container networking plugins, containerd`, `kubelet`, `kube-proxy`가 설치됩니다.
+이 챕터에서는 3개의 Kubernetes 작업자 노드를 부트스트래핑 합니다. 각 작업자 노드에 `runc`, `container networking plugins, containerd`, `kubelet`, `kube-proxy`가 설치됩니다.
 
 ### **Prerequisites**
 
-이 챕터는 워커 인스턴스 worker-0, worker-1, worker-2 각각에서 실행해야 합니다.
+이 챕터는 작업자 노드 worker-0, worker-1, worker-2 각각에서 실행해야 합니다.
 
-ssh를 통해 워커 인스턴스에 로그인 합니다.
+ssh를 통해 작업자 노드에 로그인 합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -85,13 +85,13 @@ sudo mv containerd/bin/* /bin/
 
 ### Configure CNI Networking
 
-워커 인스턴스에 aws cli와 jq를 설치합니다.
+작업자 노드에 aws cli와 jq를 설치합니다.
 
 ```
 sudo apt install awscli jq -y
 ```
 
-현재 워커 인스턴스의 태그를 통해 Pod CIDR 범위를 가져옵니다.
+현재 작업자 노드의 태그를 통해 Pod CIDR 범위를 가져옵니다.
 
 > TODO: user-data를 써서 조금 더 쉽게 해보거나 한다.
 

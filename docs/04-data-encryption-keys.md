@@ -32,7 +32,7 @@ resources:
 EOF
 ```
 
-encryption-config.yaml암호화 설정 파일을 각 컨트롤러 인스턴스에 복사합니다.
+encryption-config.yaml암호화 설정 파일을 각 컨트롤러 노드에 복사합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)

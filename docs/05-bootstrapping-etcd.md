@@ -4,9 +4,9 @@ Kubernetes는 상태를 etcd에 저장합니다. 이 챕터에서는 3개의 컨
 
 ### **Prerequisites**
 
-이 챕터는 컨트롤러 인스턴스 controller-0, controller-1, controller-2 각각에서 실행해야 합니다.
+이 챕터는 컨트롤러 노드 controller-0, controller-1, controller-2 각각에서 실행해야 합니다.
 
-ssh를 통해 컨트롤러 인스턴스에 로그인 합니다.
+ssh를 통해 컨트롤러 노드에 로그인 합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
@@ -43,13 +43,13 @@ sudo mkdir -p /etc/etcd /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 ```
 
-인스턴스 내부 IP 주소는 클라이언트 요청을 처리하고 etcd 클러스터 피어와 통신하는 데 사용됩니다. 현재 인스턴스의 Private IP 주소를 검색합니다.
+노드 내부 IP 주소는 클라이언트 요청을 처리하고 etcd 클러스터 피어와 통신하는 데 사용됩니다. 현재 노드의 Private IP 주소를 검색합니다.
 
 ```bash
 INTERNAL_IP=$(curl -s http://169.254.169.254/1.0/meta-data/local-ipv4)
 ```
 
-각 etcd 멤버는 etcd 클러스터 내에서 고유한 이름을 가져야합니다. etcd 이름을 현재 인스턴스의 호스트 이름과 일치하도록 설정합니다.
+각 etcd 멤버는 etcd 클러스터 내에서 고유한 이름을 가져야합니다. etcd 이름을 현재 노드의 호스트 이름과 일치하도록 설정합니다.
 
 ```bash
 ETCD_NAME=$(hostname -s)

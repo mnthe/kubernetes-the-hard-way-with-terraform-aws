@@ -190,7 +190,7 @@ resource "aws_key_pair" "ssh" {
 
 ### **2. Create Worker and Controller Instances**
 
-Controller Instance(Master Instance), Worker Instance를 각각 3개씩 생성합니다.
+컨트롤러 노드와 작업자 노드를 각각 3개씩 생성합니다.
 
 ```terraform
 resource "aws_key_pair" "ssh" {
@@ -387,9 +387,9 @@ output "worker_private_ips" {
 
 ### **3. Set Hostmane & Add to /etc/host**
 
-Worker 인스턴스와 Controller 인스턴스의 Hostname을 변경합니다.
+작업자 노드와 컨트롤러 노드의 Hostname을 변경합니다.
 
-추가로 각 인스턴스에 서로의 주소를 /etc/host에 등록하여 hostname으로 서로를 찾을 수 있도록 설정합니다.
+추가로 각 노드에 서로의 주소를 /etc/host에 등록하여 hostname으로 서로를 찾을 수 있도록 설정합니다.
 
 ```bash
 TERRAFORM_OUTPUT=$(terraform output --json)
