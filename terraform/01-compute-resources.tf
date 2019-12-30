@@ -164,6 +164,96 @@ data "aws_ami" "ubuntu" {
     }
 }
 
+resource "aws_iam_role" "controller_role" {
+    name = "k8s-the-hard-way-${local.name}-controller-role"
+
+    assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "controller_policy" {
+    name = "k8s-the-hard-way-${local.name}-controller-policy"
+    role = "${aws_iam_role.controller_role.id}"
+
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+          "ec2:DescribeTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "controller_profile" {
+  name = "k8s-the-hard-way-${local.name}-controller-profile"
+  role = "${aws_iam_role.controller_role.name}"
+}
+
+resource "aws_iam_role" "worker_role" {
+  name = "k8s-the-hard-way-${local.name}-worker-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "worker_policy" {
+    name = "k8s-the-hard-way-${local.name}-worker-policy"
+    role = "${aws_iam_role.worker_role.id}"
+
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+          "ec2:DescribeTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "worker_profile" {
+  name = "k8s-the-hard-way-${local.name}-worker-profile"
+  role = "${aws_iam_role.worker_role.name}"
+}
+
 resource "aws_instance" "controller" {
     count = 3
 
@@ -179,6 +269,7 @@ resource "aws_instance" "controller" {
     ]
 
     key_name = "k8s-the-hard-way-${local.name}-ssh-key"
+    iam_instance_profile = aws_iam_instance_profile.controller_profile.name
 
     root_block_device {
         volume_type = "gp2"
@@ -206,6 +297,7 @@ resource "aws_instance" "worker" {
     ]
 
     key_name = "k8s-the-hard-way-${local.name}-ssh-key"
+    iam_instance_profile = aws_iam_instance_profile.worker_profile.name
 
     root_block_device {
         volume_type = "gp2"
