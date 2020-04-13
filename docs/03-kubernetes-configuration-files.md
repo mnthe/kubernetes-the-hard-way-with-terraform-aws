@@ -1,4 +1,4 @@
-# **Generating Kubernetes Configuration Files for Authentication**
+# Generating Kubernetes Configuration Files for Authentication
 
 ## **Client Authentication Configs**
 

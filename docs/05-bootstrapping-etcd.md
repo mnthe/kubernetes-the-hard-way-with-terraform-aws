@@ -1,4 +1,4 @@
-# **Bootstrapping the etcd Cluster**
+# Bootstrapping the ETCD Cluster
 
 Kubernetes는 상태를 etcd에 저장합니다. 이 챕터에서는 3개의 컨트롤러 노드에 etcd 클러스터를 부트스트래핑 합니다.
 

@@ -64,7 +64,7 @@ Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCom
 
 ### **5) ssh, scp**
 
-기본으로 깔려있어야 함...
+대부분 기본적으로 설치되어 있을 것이나, 없는 경우 `openssh-clients` 를 설치합니다.
 
 ## **2. Confituration**
 

@@ -1,4 +1,4 @@
-# **Provisioning a CA and Generating TLS Certificates**
+# Provisioning a CA and Generating TLS Certificates
 
 cfssl을 사용하여 PKI 인프라를 프로비저닝하고, `etcd`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, `kubelet`, `kube-proxy`에 대한 TLS 인증서를 생성합니다.
 

@@ -1,4 +1,4 @@
-# **Generating the Data Encryption Config and Key**
+# Generating the Data Encryption Config and Key
 
 Kubernetes는 클러스터 상태, 응용 프로그램 설정 및 비밀을 포함한 다양한 데이터를 저장합니다. Kubernetes는 유휴 클러스터 데이터를 암호화 하는 기능을 지원합니다.
 

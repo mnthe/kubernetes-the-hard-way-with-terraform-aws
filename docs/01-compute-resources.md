@@ -1,4 +1,4 @@
-# **Provisioning Computing Resource**
+# Provisioning Computing Resource
 
 ## **Networking**
 
@@ -15,17 +15,6 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "k8s-the-hard-way-vpc-${local.name}"
   }
-}
-
-resource "aws_subnet" "public" {
-    vpc_id = aws_vpc.vpc.id
-    cidr_block = "10.240.0.0/24"
-
-    map_public_ip_on_launch = true
-
-    tags = {
-        Name = "k8s-the-hard-way-subnet-public-${local.name}"
-    }
 }
 ```
 
@@ -65,7 +54,12 @@ resource "aws_route" "public_internet_gateway" {
     gateway_id = aws_internet_gateway.gateway.id
 }
 
-resource "aws_main_route_table_association" "route_table_association" {
+resource "aws_route_table_association" "route_table_association" {
+    subnet_id      = aws_subnet.public.id
+    route_table_id = aws_route_table.public.id
+}
+
+resource "aws_main_route_table_association" "main_route_table_association" {
   vpc_id         = aws_vpc.vpc.id
   route_table_id = aws_route_table.public.id
 }

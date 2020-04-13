@@ -1,4 +1,4 @@
-# **Bootstrapping the Kubernetes Control Plane**
+# Bootstrapping the Kubernetes Worker Nodes
 
 이 챕터에서는 Kubernetes 컨트롤 플레인을 부트 스트랩합니다. 고 가용성을 위해 3개의 컨트롤러 노드에 세팅을 하며, Kubernetes API 서버를 원격 클라이언트에 노출시키는 외부로드 밸런서를 생성합니다.
 

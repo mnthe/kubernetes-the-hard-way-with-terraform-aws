@@ -1,4 +1,4 @@
-# **Cleaning Up**
+# Cleaning Up
 
 실습에서 사용된 리소스들을 정리합니다.
 
