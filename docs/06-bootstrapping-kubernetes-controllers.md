@@ -167,7 +167,7 @@ leaderElection:
 EOF
 ```
 
-`kube-controller-manager.service` systemd unit file을 작성합니다
+`kube-scheduler.service` systemd unit file을 작성합니다
 
 ```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-scheduler.service
