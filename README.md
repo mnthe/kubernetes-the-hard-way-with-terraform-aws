@@ -16,8 +16,19 @@
 
 ## Labs
 
-- [Prerequisites](docs/00-prerequisites.md)
-- [Provisioning Computing Resources](docs/01-compute-resources.md)
+- [0. Prerequisites](docs/00-prerequisites.md)
+- [1. Provisioning Computing Resources](docs/01-compute-resources.md)
+- [2. Provisioning a CA and Generating TLS Certificates](docs/02-certificate-authority.md)
+- [3. Generating Kubernetes Configuration Files for Authentication](docs/03-kubernetes-configuration-files.md)
+- [4. Generating the Data Encryption Config and Key](docs/04-data-encryption-keys.md)
+- [5. Bootstrapping the ETCD Cluster](docs/05-bootstrapping-etcd.md)
+- [6. Bootstrapping the Kubernetes Control Plane](docs/06-bootstrapping-kubernetes-controllers.md)
+- [7. Bootstrapping the Kubernetes Worker Nodes](docs/07-bootstrapping-kubernetes-workers.md)
+- [8. Configuring kubectl for Remote Access](docs/08-configuring-kubectl.md)
+- [9. Provisioning Pod Network Routes](docs/09-pod-network-routes.md)
+- [10. Deploying the DNS Cluster Add-on](docs/10-dns-addon.md)
+- [11. Smoke Test](docs/11-smoke-test.md)
+- [12. Cleaning Up](docs/12-cleanup.md)
 
 ## TODOs
 
