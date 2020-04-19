@@ -9,3 +9,8 @@
 *.tfvars
 
 terraform-test
+
+scripts/*.tf
+scripts/*.json
+scripts/ca/*
+scripts/ssh/*
