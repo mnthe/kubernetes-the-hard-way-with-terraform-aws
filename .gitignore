@@ -14,3 +14,4 @@ scripts/*.tf
 scripts/*.json
 scripts/ca/*
 scripts/ssh/*
+scripts/config/*

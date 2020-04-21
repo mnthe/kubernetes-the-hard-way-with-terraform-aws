@@ -1,4 +1,5 @@
 # Create CA Cert
+echo "Create CA Cert"
 mkdir ca
 cat > ca/ca-config.json <<EOF
 {
@@ -38,6 +39,7 @@ EOF
 cfssl gencert -initca ca/ca-csr.json | cfssljson -bare ca/ca
 
 # Create `admin` client cert
+echo "Create `admin` client cert"
 cat > ca/admin-csr.json <<EOF
 {
   "CN": "admin",
@@ -66,6 +68,7 @@ cfssl gencert \
 
 
 # Create controller manager client cert
+echo "Create controller manager client cert"
 cat > ca/kube-controller-manager-csr.json <<EOF
 {
   "CN": "system:kube-controller-manager",
@@ -93,6 +96,7 @@ cfssl gencert \
   ca/kube-controller-manager-csr.json | cfssljson -bare ca/kube-controller-manager
 
 # Create kube-scheduler cert
+echo "Create kube-scheduler cert"
 cat > ca/kube-scheduler-csr.json <<EOF
 {
   "CN": "system:kube-scheduler",
@@ -120,9 +124,11 @@ cfssl gencert \
   ca/kube-scheduler-csr.json | cfssljson -bare ca/kube-scheduler
 
 # Get terraform data
+echo "Get terraform data"
 TERRAFORM_OUTPUT=$(terraform output --json)
 
 # Create kube-api-server cert
+echo "Create kube-api-server cert"
 KUBERNETES_PUBLIC_ADDRESS=$(echo $TERRAFORM_OUTPUT | jq -r '.controller_loadbalancer_public_ip.value')
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 
@@ -155,6 +161,7 @@ cfssl gencert \
   ca/kubernetes-csr.json | cfssljson -bare ca/kubernetes
 
 # Create service-account cert
+echo "Create service-account cert"
 cat > ca/service-account-csr.json <<EOF
 {
   "CN": "service-accounts",
@@ -182,6 +189,7 @@ cfssl gencert \
   ca/service-account-csr.json | cfssljson -bare ca/service-account
 
 # Create Kubelet client cert
+echo "Create Kubelet client cert"
 for i in $(seq 0 2); do
 cat > ca/worker-$i-csr.json <<EOF
 {
@@ -215,6 +223,7 @@ cfssl gencert \
 done
 
 # Create kubeproxy cert
+echo "Create kubeproxy cert"
 cat > ca/kube-proxy-csr.json <<EOF
 {
   "CN": "system:kube-proxy",
