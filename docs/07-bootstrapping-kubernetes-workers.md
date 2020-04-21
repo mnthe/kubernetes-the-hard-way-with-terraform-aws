@@ -29,7 +29,7 @@ sudo apt-get -y install socat conntrack ipset
 
 ### Disable Swap
 
-swap이 활성화 되어있으면 Kubelet이 시작되지 않습니다.
+swap은 QoS 문제로 권장하지 않습니다.
 
 swap이 활성화 되어있는지 확인합니다. 출력되는것이 없으면 swap이 활성화 되어있지 않은 상태입니다.
 
