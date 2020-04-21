@@ -249,3 +249,20 @@ cfssl gencert \
   -config=ca/ca-config.json \
   -profile=kubernetes \
   ca/kube-proxy-csr.json | cfssljson -bare ca/kube-proxy
+
+echo "Copy certs to kubernetes nodes"
+
+TERRAFORM_OUTPUT=$(terraform output --json)
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[$i]")
+    scp -o StrictHostKeyChecking=no -i ssh/ssh.pem \
+        ca/ca.pem ca/worker-$i-key.pem ca/worker-$i.pem ubuntu@$PUBLIC_IP:~/
+done
+
+TERRAFORM_OUTPUT=$(terraform output --json)
+for i in $(seq 0 2); do
+    PUBLIC_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[$i]")
+    scp -o StrictHostKeyChecking=no -i ssh/ssh.pem \
+        ca/ca.pem ca/ca-key.pem ca/kubernetes-key.pem ca/kubernetes.pem \
+        ca/service-account-key.pem ca/service-account.pem ubuntu@$PUBLIC_IP:~/
+done
