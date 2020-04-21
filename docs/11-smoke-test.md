@@ -16,7 +16,7 @@ kubectl create secret generic kubernetes-the-hard-way \
 etcd에 저장된 Secret의 hexdump를 출력합니다
 
 ```bash
-TERRAFORM_OUTPUT=$(terraform12 output --json)
+TERRAFORM_OUTPUT=$(terraform output --json)
 ssh -i ssh/ssh.pem ubuntu@$(echo $TERRAFORM_OUTPUT | jq -r ".controller_public_ips.value[0]") \
     "sudo ETCDCTL_API=3 etcdctl get \
     --endpoints=https://127.0.0.1:2379 \
@@ -187,7 +187,7 @@ resource "aws_security_group_rule" "nginx" {
 작업자 노드의 External IP 주소와 nginx노드 포트를 사용하여 HTTP 요청을 보냅니다.
 
 ```bash
-TERRAFORM_OUTPUT=$(terraform12 output --json)
+TERRAFORM_OUTPUT=$(terraform output --json)
 INSTANCE_IP=$(echo $TERRAFORM_OUTPUT | jq -r ".worker_public_ips.value[0]")
 NODE_PORT=$(kubectl get svc nginx --output=jsonpath='{range .spec.ports[0]}{.nodePort}')
 curl -I http://$INSTANCE_IP:$NODE_PORT
