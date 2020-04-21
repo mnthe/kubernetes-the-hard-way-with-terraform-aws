@@ -11,7 +11,7 @@
 > 주의) 로컬의 default kubeconfig에 본 세션의 credential이 추가됩니다.
 
 ```bash
-TERRAFORM_OUTPUT=$(terraform12 output --json)
+TERRAFORM_OUTPUT=$(terraform output --json)
 KUBERNETES_PUBLIC_ADDRESS=$(echo $TERRAFORM_OUTPUT | jq -r '.controller_loadbalancer_public_ip.value')
 
 kubectl config set-cluster kubernetes-the-hard-way \
