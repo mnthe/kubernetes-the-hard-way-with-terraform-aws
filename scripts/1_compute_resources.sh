@@ -37,6 +37,8 @@ if [ ! -f "./ssh/ssh.pem" ]; then
 echo "Creating ssh key..."
 mkdir ./ssh
 ssh-keygen -t rsa -f ./ssh/ssh.pem -N ""
+chmod 400 ./ssh/ssh.pem
+chmod 400 ./ssh/ssh.pem.pub
 fi
 
 echo "terraform applying..."
